@@ -1,4 +1,5 @@
 using ToneMaster.Audio;
+using ToneMaster.Window;
 
 namespace ToneMaster
 {
@@ -88,18 +89,9 @@ namespace ToneMaster
 
         private void enregistrerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (FolderBrowserDialog folderDialog = new FolderBrowserDialog())
-            {
-                folderDialog.SelectedPath = "C:\\"; // R�pertoire initial par d�faut
-
-                // Si un dossier est s�lectionn�, alors...
-                if (folderDialog.ShowDialog() == DialogResult.OK)
-                {
-                    string selectedFolderPath = folderDialog.SelectedPath;
-
-                    wavReader.CloneAudio(selectedFolderPath + $"\\File_modified.wav");
-                }
-            }
+            SaveWindow saveWindow = new SaveWindow(wavReader);
+            // Affiche la fenêtre
+            saveWindow.Show(); // Utilisez ShowDialog() pour une fenêtre modale
         }
 
         private void AntiDistortion(object sender, EventArgs e)
