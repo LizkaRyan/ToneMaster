@@ -8,6 +8,20 @@ public class WavReader
 
     private String input;
 
+    private WavData _wavData;
+    
+    public WavData WavData
+    {
+        get
+        {
+            if (_wavData == null)
+            {
+                _wavData = new WavData(this.input);
+            }
+            return _wavData;
+        }
+    }
+
     public WavReader(String input)
     {
         this.input = input;
@@ -15,57 +29,14 @@ public class WavReader
 
     public void ReduceNoise(string outputPath, float threshold)
     {
-        byte[] riffHeader = new byte[12];
-        byte[] fmtChunk = null;
-        byte[] dataChunk = null;
-        List<byte[]> otherChunks = new List<byte[]>();
-
-        // Lire structure complète
-        using (FileStream fs = File.OpenRead(this.input))
-        {
-            fs.Read(riffHeader, 0, 12);
-
-            while (fs.Position < fs.Length)
-            {
-                byte[] chunkId = new byte[4];
-                byte[] chunkSizeBytes = new byte[4];
-                fs.Read(chunkId, 0, 4);
-                fs.Read(chunkSizeBytes, 0, 4);
-
-                int chunkSize = BitConverter.ToInt32(chunkSizeBytes, 0);
-                byte[] chunkData = new byte[chunkSize];
-                fs.Read(chunkData, 0, chunkSize);
-
-                // Gestion du padding
-                if (chunkSize % 2 != 0) fs.ReadByte();
-
-                string chunkName = Encoding.ASCII.GetString(chunkId);
-                switch (chunkName)
-                {
-                    case "fmt ":
-                        fmtChunk = chunkData;
-                        break;
-                    case "data":
-                        dataChunk = chunkData;
-                        break;
-                    default:
-                        otherChunks.Add(chunkId);
-                        otherChunks.Add(chunkSizeBytes);
-                        otherChunks.Add(chunkData);
-                        if (chunkSize % 2 != 0) otherChunks.Add(new byte[] { 0 });
-                        break;
-                }
-            }
-        }
-
         // Vérifier le format audio
-        short bitsPerSample = BitConverter.ToInt16(fmtChunk, 14);
+        short bitsPerSample = BitConverter.ToInt16(this.WavData.FmtChunk, 14);
         if (bitsPerSample != 16) throw new Exception("Uniquement 16-bit PCM supporté");
 
         // Réduction de bruit
-        for (int i = 0; i < dataChunk.Length; i += 2)
+        for (int i = 0; i < WavData.DataChunk.Length; i += 2)
         {
-            short sample = BitConverter.ToInt16(dataChunk, i);
+            short sample = BitConverter.ToInt16(WavData.DataChunk, i);
 
             // Appliquer un seuil : échantillons proches de zéro sont considérés comme du bruit
             if (Math.Abs(sample) < threshold)
@@ -74,68 +45,23 @@ public class WavReader
             }
 
             // Écrire le nouvel échantillon
-            BitConverter.GetBytes(sample).CopyTo(dataChunk, i);
+            BitConverter.GetBytes(sample).CopyTo(WavData.DataChunk, i);
         }
 
         // Réécriture du fichier
-        using (FileStream fs = File.Create(outputPath))
-        {
-            fs.Write(riffHeader, 0, 12);
-
-            // Réécrire le chunk fmt
-            fs.Write(Encoding.ASCII.GetBytes("fmt "), 0, 4);
-            fs.Write(BitConverter.GetBytes(fmtChunk.Length), 0, 4);
-            fs.Write(fmtChunk, 0, fmtChunk.Length);
-            if (fmtChunk.Length % 2 != 0) fs.WriteByte(0);
-
-            // Réécrire le chunk data
-            fs.Write(Encoding.ASCII.GetBytes("data"), 0, 4);
-            fs.Write(BitConverter.GetBytes(dataChunk.Length), 0, 4);
-            fs.Write(dataChunk, 0, dataChunk.Length);
-            if (dataChunk.Length % 2 != 0) fs.WriteByte(0);
-
-            // Réécrire les autres chunks
-            foreach (byte[] chunkPart in otherChunks)
-                fs.Write(chunkPart, 0, chunkPart.Length);
-        }
+        RewriteData(outputPath);
     }
 
     public void AntiDistortion(string outputPath, float threshold = 0.95f)
     {
-        byte[] riffHeader = new byte[12];
-        byte[] fmtChunk = null;
-        byte[] dataChunk = null;
-
-        // Lecture du fichier
-        using (FileStream fs = File.OpenRead(this.input))
-        {
-            fs.Read(riffHeader, 0, 12);
-            
-            while (fs.Position < fs.Length)
-            {
-                byte[] chunkId = new byte[4];
-                byte[] chunkSizeBytes = new byte[4];
-                fs.Read(chunkId, 0, 4);
-                fs.Read(chunkSizeBytes, 0, 4);
-                
-                int chunkSize = BitConverter.ToInt32(chunkSizeBytes, 0);
-                byte[] chunkData = new byte[chunkSize];
-                fs.Read(chunkData, 0, chunkSize);
-
-                string chunkName = Encoding.ASCII.GetString(chunkId);
-                if (chunkName == "fmt ") fmtChunk = chunkData;
-                if (chunkName == "data") dataChunk = chunkData;
-            }
-        }
-
         // Vérification du format
-        short bitsPerSample = BitConverter.ToInt16(fmtChunk, 14);
+        short bitsPerSample = BitConverter.ToInt16(WavData.FmtChunk, 14);
         if (bitsPerSample != 16) throw new Exception("Uniquement 16-bit PCM supporté");
 
         // Traitement anti-distortion
-        for (int i = 0; i < dataChunk.Length; i += 2)
+        for (int i = 0; i < WavData.DataChunk.Length; i += 2)
         {
-            short original = BitConverter.ToInt16(dataChunk, i);
+            short original = BitConverter.ToInt16(WavData.DataChunk, i);
             float sample = original / 32768f; // Conversion en float [-1.0, 1.0]
 
             // Application du soft clipping
@@ -143,20 +69,12 @@ public class WavReader
 
             // Conversion finale
             short result = (short)(processed * 32768f);
-            BitConverter.GetBytes(result).CopyTo(dataChunk, i);
+            BitConverter.GetBytes(result).CopyTo(WavData.DataChunk, i);
         }
 
         // Écriture du fichier
-        using (FileStream fs = File.Create(outputPath))
-        {
-            fs.Write(riffHeader, 0, 12);
-            fs.Write(Encoding.ASCII.GetBytes("fmt "), 0, 4);
-            fs.Write(BitConverter.GetBytes(fmtChunk.Length), 0, 4);
-            fs.Write(fmtChunk, 0, fmtChunk.Length);
-            fs.Write(Encoding.ASCII.GetBytes("data"), 0, 4);
-            fs.Write(BitConverter.GetBytes(dataChunk.Length), 0, 4);
-            fs.Write(dataChunk, 0, dataChunk.Length);
-        }
+        // Réécriture du fichier
+        RewriteData(outputPath);
     }
     
     private static float ApplyAntiDistortion(float sample, float threshold)
@@ -174,80 +92,36 @@ public class WavReader
     
     public void Amplify(string outputPath, float gain)
     {
-        byte[] riffHeader = new byte[12];
-        byte[] fmtChunk = null;
-        byte[] dataChunk = null;
-        List<byte[]> otherChunks = new List<byte[]>();
-
-        // Lire structure complète
-        using (FileStream fs = File.OpenRead(this.input))
-        {
-            fs.Read(riffHeader, 0, 12);
-            
-            while (fs.Position < fs.Length)
-            {
-                byte[] chunkId = new byte[4];
-                byte[] chunkSizeBytes = new byte[4];
-                fs.Read(chunkId, 0, 4);
-                fs.Read(chunkSizeBytes, 0, 4);
-                
-                int chunkSize = BitConverter.ToInt32(chunkSizeBytes, 0);
-                byte[] chunkData = new byte[chunkSize];
-                fs.Read(chunkData, 0, chunkSize);
-
-                // Gestion du padding
-                if (chunkSize % 2 != 0) fs.ReadByte();
-
-                string chunkName = Encoding.ASCII.GetString(chunkId);
-                switch (chunkName)
-                {
-                    case "fmt ":
-                        fmtChunk = chunkData;
-                        break;
-                    case "data":
-                        dataChunk = chunkData;
-                        break;
-                    default:
-                        otherChunks.Add(chunkId);
-                        otherChunks.Add(chunkSizeBytes);
-                        otherChunks.Add(chunkData);
-                        if (chunkSize % 2 != 0) otherChunks.Add(new byte[] { 0 });
-                        break;
-                }
-            }
-        }
-
         // Vérifier le format audio
-        short bitsPerSample = BitConverter.ToInt16(fmtChunk, 14);
+        short bitsPerSample = BitConverter.ToInt16(WavData.FmtChunk, 14);
         if (bitsPerSample != 16) throw new Exception("Uniquement 16-bit PCM supporté");
 
         // Amplification
-        for (int i = 0; i < dataChunk.Length; i += 2)
+        for (int i = 0; i < WavData.DataChunk.Length; i += 2)
         {
-            short sample = BitConverter.ToInt16(dataChunk, i);
+            short sample = BitConverter.ToInt16(WavData.DataChunk, i);
             sample = (short)Math.Clamp(sample * gain, short.MinValue, short.MaxValue);
-            BitConverter.GetBytes(sample).CopyTo(dataChunk, i);
+            BitConverter.GetBytes(sample).CopyTo(WavData.DataChunk, i);
         }
 
         // Réécriture du fichier
+        RewriteData(outputPath);
+    }
+
+    private void RewriteData(string outputPath)
+    {
         using (FileStream fs = File.Create(outputPath))
         {
-            fs.Write(riffHeader, 0, 12);
-            
-            // Réécrire le chunk fmt
+            fs.Write(WavData.RiffHeader, 0, 12);
             fs.Write(Encoding.ASCII.GetBytes("fmt "), 0, 4);
-            fs.Write(BitConverter.GetBytes(fmtChunk.Length), 0, 4);
-            fs.Write(fmtChunk, 0, fmtChunk.Length);
-            if (fmtChunk.Length % 2 != 0) fs.WriteByte(0);
-
-            // Réécrire le chunk data
+            fs.Write(BitConverter.GetBytes(WavData.FmtChunk.Length), 0, 4);
+            fs.Write(WavData.FmtChunk, 0, WavData.FmtChunk.Length);
+            if (WavData.FmtChunk.Length % 2 != 0) fs.WriteByte(0);
             fs.Write(Encoding.ASCII.GetBytes("data"), 0, 4);
-            fs.Write(BitConverter.GetBytes(dataChunk.Length), 0, 4);
-            fs.Write(dataChunk, 0, dataChunk.Length);
-            if (dataChunk.Length % 2 != 0) fs.WriteByte(0);
-
-            // Réécrire les autres chunks
-            foreach (byte[] chunkPart in otherChunks)
+            fs.Write(BitConverter.GetBytes(WavData.DataChunk.Length), 0, 4);
+            fs.Write(WavData.DataChunk, 0, WavData.DataChunk.Length);
+            if (WavData.DataChunk.Length % 2 != 0) fs.WriteByte(0);
+            foreach (byte[] chunkPart in WavData.OtherChunks)
                 fs.Write(chunkPart, 0, chunkPart.Length);
         }
     }
