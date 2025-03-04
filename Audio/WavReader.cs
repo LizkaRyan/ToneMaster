@@ -5,7 +5,6 @@ namespace ToneMaster.Audio;
 
 public class WavReader
 {
-
     private String input;
 
     private WavData _wavData;
@@ -76,7 +75,7 @@ public class WavReader
         // Réécriture du fichier
         RewriteData(outputPath);
     }
-    
+
     private static float ApplyAntiDistortion(float sample, float threshold)
     {
         // Seuil de déclenchement (par défaut 95% de l'amplitude max)
@@ -89,7 +88,7 @@ public class WavReader
 
         return Math.Sign(sample) * softened;
     }
-    
+
     public void Amplify(string outputPath, float gain)
     {
         // Vérifier le format audio
