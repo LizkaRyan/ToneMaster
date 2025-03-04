@@ -5,7 +5,6 @@ namespace ToneMaster.Audio;
 
 public class WavReader
 {
-
     private String input;
 
     public WavReader(String input)
@@ -110,14 +109,14 @@ public class WavReader
         using (FileStream fs = File.OpenRead(this.input))
         {
             fs.Read(riffHeader, 0, 12);
-            
+
             while (fs.Position < fs.Length)
             {
                 byte[] chunkId = new byte[4];
                 byte[] chunkSizeBytes = new byte[4];
                 fs.Read(chunkId, 0, 4);
                 fs.Read(chunkSizeBytes, 0, 4);
-                
+
                 int chunkSize = BitConverter.ToInt32(chunkSizeBytes, 0);
                 byte[] chunkData = new byte[chunkSize];
                 fs.Read(chunkData, 0, chunkSize);
@@ -158,7 +157,7 @@ public class WavReader
             fs.Write(dataChunk, 0, dataChunk.Length);
         }
     }
-    
+
     private static float ApplyAntiDistortion(float sample, float threshold)
     {
         // Seuil de déclenchement (par défaut 95% de l'amplitude max)
@@ -171,7 +170,7 @@ public class WavReader
 
         return Math.Sign(sample) * softened;
     }
-    
+
     public void Amplify(string outputPath, float gain)
     {
         byte[] riffHeader = new byte[12];
@@ -183,14 +182,14 @@ public class WavReader
         using (FileStream fs = File.OpenRead(this.input))
         {
             fs.Read(riffHeader, 0, 12);
-            
+
             while (fs.Position < fs.Length)
             {
                 byte[] chunkId = new byte[4];
                 byte[] chunkSizeBytes = new byte[4];
                 fs.Read(chunkId, 0, 4);
                 fs.Read(chunkSizeBytes, 0, 4);
-                
+
                 int chunkSize = BitConverter.ToInt32(chunkSizeBytes, 0);
                 byte[] chunkData = new byte[chunkSize];
                 fs.Read(chunkData, 0, chunkSize);
@@ -233,7 +232,7 @@ public class WavReader
         using (FileStream fs = File.Create(outputPath))
         {
             fs.Write(riffHeader, 0, 12);
-            
+
             // Réécrire le chunk fmt
             fs.Write(Encoding.ASCII.GetBytes("fmt "), 0, 4);
             fs.Write(BitConverter.GetBytes(fmtChunk.Length), 0, 4);
