@@ -31,19 +31,20 @@
             panel1 = new Panel();
             ToneMaster = new Label();
             MainPanel = new Panel();
+            panel2 = new Panel();
+            playButton = new Button();
+            button3 = new Button();
+            button2 = new Button();
+            button1 = new Button();
             menuStrip1 = new MenuStrip();
             fichierToolStripMenuItem = new ToolStripMenuItem();
             ouvrirUnFichierToolStripMenuItem = new ToolStripMenuItem();
             enregistrerToolStripMenuItem = new ToolStripMenuItem();
             fileSelected = new OpenFileDialog();
-            panel2 = new Panel();
-            button1 = new Button();
-            button2 = new Button();
-            button3 = new Button();
             panel1.SuspendLayout();
             MainPanel.SuspendLayout();
-            menuStrip1.SuspendLayout();
             panel2.SuspendLayout();
+            menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
@@ -74,6 +75,57 @@
             MainPanel.Size = new Size(980, 353);
             MainPanel.TabIndex = 1;
             // 
+            // panel2
+            // 
+            panel2.Controls.Add(playButton);
+            panel2.Controls.Add(button3);
+            panel2.Controls.Add(button2);
+            panel2.Controls.Add(button1);
+            panel2.Location = new Point(11, 10);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(957, 334);
+            panel2.TabIndex = 0;
+            // 
+            // playButton
+            // 
+            playButton.Location = new Point(392, 230);
+            playButton.Name = "playButton";
+            playButton.Size = new Size(94, 29);
+            playButton.TabIndex = 3;
+            playButton.Text = "Play";
+            playButton.UseVisualStyleBackColor = true;
+            playButton.Click += playButton_Click;
+            // 
+            // button3
+            // 
+            button3.Location = new Point(732, 286);
+            button3.Name = "button3";
+            button3.Size = new Size(136, 29);
+            button3.TabIndex = 2;
+            button3.Text = "Reduce Noise";
+            button3.UseVisualStyleBackColor = true;
+            button3.Click += ReduceNoise;
+            // 
+            // button2
+            // 
+            button2.Location = new Point(378, 286);
+            button2.Name = "button2";
+            button2.Size = new Size(124, 29);
+            button2.TabIndex = 1;
+            button2.Text = "AntiDistortion";
+            button2.UseVisualStyleBackColor = true;
+            button2.Click += AntiDistortion;
+            // 
+            // button1
+            // 
+            button1.Location = new Point(28, 286);
+            button1.Name = "button1";
+            button1.Size = new Size(94, 29);
+            button1.TabIndex = 0;
+            button1.Text = "Amplify";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += Amplify;
+            // 
             // menuStrip1
             // 
             menuStrip1.ImageScalingSize = new Size(20, 20);
@@ -94,57 +146,20 @@
             // ouvrirUnFichierToolStripMenuItem
             // 
             ouvrirUnFichierToolStripMenuItem.Name = "ouvrirUnFichierToolStripMenuItem";
-            ouvrirUnFichierToolStripMenuItem.Size = new Size(224, 26);
+            ouvrirUnFichierToolStripMenuItem.Size = new Size(197, 26);
             ouvrirUnFichierToolStripMenuItem.Text = "Ouvrir un fichier";
             ouvrirUnFichierToolStripMenuItem.Click += ouvrirUnFichierToolStripMenuItem_Click;
             // 
             // enregistrerToolStripMenuItem
             // 
             enregistrerToolStripMenuItem.Name = "enregistrerToolStripMenuItem";
-            enregistrerToolStripMenuItem.Size = new Size(224, 26);
+            enregistrerToolStripMenuItem.Size = new Size(197, 26);
             enregistrerToolStripMenuItem.Text = "Enregistrer";
+            enregistrerToolStripMenuItem.Click += enregistrerToolStripMenuItem_Click;
             // 
             // fileSelected
             // 
             fileSelected.FileName = "fileSelected";
-            // 
-            // panel2
-            // 
-            panel2.Controls.Add(button3);
-            panel2.Controls.Add(button2);
-            panel2.Controls.Add(button1);
-            panel2.Location = new Point(11, 10);
-            panel2.Name = "panel2";
-            panel2.Size = new Size(957, 334);
-            panel2.TabIndex = 0;
-            // 
-            // button1
-            // 
-            button1.Location = new Point(28, 286);
-            button1.Name = "button1";
-            button1.Size = new Size(94, 29);
-            button1.TabIndex = 0;
-            button1.Text = "Amplify";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += Amplify;
-            // 
-            // button2
-            // 
-            button2.Location = new Point(378, 286);
-            button2.Name = "button2";
-            button2.Size = new Size(124, 29);
-            button2.TabIndex = 1;
-            button2.Text = "AntiDistortion";
-            button2.UseVisualStyleBackColor = true;
-            // 
-            // button3
-            // 
-            button3.Location = new Point(732, 286);
-            button3.Name = "button3";
-            button3.Size = new Size(136, 29);
-            button3.TabIndex = 2;
-            button3.Text = "Reduce Noise";
-            button3.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -160,9 +175,9 @@
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             MainPanel.ResumeLayout(false);
+            panel2.ResumeLayout(false);
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
-            panel2.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -181,5 +196,6 @@
         private Button button1;
         private Button button3;
         private Button button2;
+        private Button playButton;
     }
 }

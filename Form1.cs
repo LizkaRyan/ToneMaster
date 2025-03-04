@@ -11,7 +11,7 @@ namespace ToneMaster
 
         WavReader wavReader;
 
-        Dictionary<string,string> properties = ReadProperties();
+        Dictionary<string, string> properties = ReadProperties();
 
         private void ouvrirUnFichierToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -33,7 +33,7 @@ namespace ToneMaster
         private void Amplify(object sender, EventArgs e)
         {
             string fileTemp = $"{properties["temp.directory"]}\\temp.wav";
-            wavReader.Amplify(fileTemp,2);
+            wavReader.Amplify(fileTemp, 2);
             wavReader = new WavReader(fileTemp);
         }
 
@@ -43,17 +43,17 @@ namespace ToneMaster
             Dictionary<string, string> result = new Dictionary<string, string>();
             try
             {
-                // Dictionnaire pour stocker les paires clé-valeur
+                // Dictionnaire pour stocker les paires clï¿½-valeur
                 var properties = new Dictionary<string, string>();
 
                 // Lire chaque ligne du fichier
                 foreach (var line in File.ReadAllLines(filePath))
                 {
-                    // Ignorer les lignes vides ou les commentaires (commençant par # ou ;)
+                    // Ignorer les lignes vides ou les commentaires (commenï¿½ant par # ou ;)
                     if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#") || line.StartsWith(";"))
                         continue;
 
-                    // Diviser la ligne en clé et valeur
+                    // Diviser la ligne en clï¿½ et valeur
                     var keyValue = line.Split(new[] { '=' }, 2); // Diviser uniquement au premier '='
                     if (keyValue.Length == 2)
                     {
@@ -63,7 +63,7 @@ namespace ToneMaster
                     }
                 }
 
-                // Afficher les propriétés chargées
+                // Afficher les propriï¿½tï¿½s chargï¿½es
                 foreach (var entry in properties)
                 {
                     result.Add(entry.Key, entry.Value);
@@ -79,6 +79,41 @@ namespace ToneMaster
             }
 
             return result;
+        }
+
+        private void playButton_Click(object sender, EventArgs e)
+        {
+            wavReader.Play();
+        }
+
+        private void enregistrerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (FolderBrowserDialog folderDialog = new FolderBrowserDialog())
+            {
+                folderDialog.SelectedPath = "C:\\"; // Rï¿½pertoire initial par dï¿½faut
+
+                // Si un dossier est sï¿½lectionnï¿½, alors...
+                if (folderDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string selectedFolderPath = folderDialog.SelectedPath;
+
+                    wavReader.CloneAudio(selectedFolderPath + $"\\File_modified.wav");
+                }
+            }
+        }
+
+        private void AntiDistortion(object sender, EventArgs e)
+        {
+            string fileTemp = $"{properties["temp.directory"]}\\temp.wav";
+            wavReader.AntiDistortion(fileTemp);
+            wavReader = new WavReader(fileTemp);
+        }
+
+        private void ReduceNoise(object sender, EventArgs e)
+        {
+            string fileTemp = $"{properties["temp.directory"]}\\temp.wav";
+            wavReader.AntiDistortion(fileTemp);
+            wavReader = new WavReader(fileTemp);
         }
     }
 }
