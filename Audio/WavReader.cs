@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Media;
+using System.Text;
 
 namespace ToneMaster.Audio;
 
@@ -248,5 +249,43 @@ public class WavReader
             foreach (byte[] chunkPart in otherChunks)
                 fs.Write(chunkPart, 0, chunkPart.Length);
         }
+    }
+
+    public void Play()
+    {
+        try
+        {
+            SoundPlayer player = new SoundPlayer(this.input);
+            player.Play(); // Joue le fichier en mode asynchrone (sans bloquer le programme)
+
+            // Pour attendre la fin du son, utilisez PlaySync au lieu de Play
+            // player.PlaySync();
+
+            Console.WriteLine("Lecture du fichier audio...");
+            Console.ReadLine(); // Pour garder l'application ouverte
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erreur lors de la lecture du fichier : {ex.Message}");
+        }
+    }
+
+    public void CloneAudio(string outputPath)
+    {
+        using (var inputStream = new FileStream(this.input, FileMode.Open, FileAccess.Read))
+        using (var outputStream = new FileStream(outputPath, FileMode.Create, FileAccess.Write))
+        using (var reader = new BinaryReader(inputStream))
+        using (var writer = new BinaryWriter(outputStream))
+        {
+            // Lire et écrire l'en-tête de 44 octets
+            byte[] header = reader.ReadBytes(44);  // L'en-tête est de 44 octets dans un fichier WAV standard
+            writer.Write(header); // Écrire l'en-tête dans le fichier de sortie
+
+            // Copier toutes les données audio du fichier source vers le fichier de sortie
+            byte[] audioData = reader.ReadBytes((int)(inputStream.Length - 44)); // Lire les données audio
+            writer.Write(audioData);  // Écrire les données audio dans le fichier de sortie
+        }
+
+        Console.WriteLine($"Fichier cloné enregistré sous : {outputPath}");
     }
 }
