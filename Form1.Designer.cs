@@ -41,10 +41,12 @@
             ouvrirUnFichierToolStripMenuItem = new ToolStripMenuItem();
             enregistrerToolStripMenuItem = new ToolStripMenuItem();
             fileSelected = new OpenFileDialog();
+            inputNumber = new NumericUpDown();
             panel1.SuspendLayout();
             MainPanel.SuspendLayout();
             panel2.SuspendLayout();
             menuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)inputNumber).BeginInit();
             SuspendLayout();
             // 
             // panel1
@@ -77,6 +79,7 @@
             // 
             // panel2
             // 
+            panel2.Controls.Add(inputNumber);
             panel2.Controls.Add(playButton);
             panel2.Controls.Add(button3);
             panel2.Controls.Add(button2);
@@ -88,7 +91,7 @@
             // 
             // playButton
             // 
-            playButton.Location = new Point(392, 230);
+            playButton.Location = new Point(390, 251);
             playButton.Name = "playButton";
             playButton.Size = new Size(94, 29);
             playButton.TabIndex = 3;
@@ -161,6 +164,14 @@
             // 
             fileSelected.FileName = "fileSelected";
             // 
+            // inputNumber
+            // 
+            inputNumber.Increment = new decimal(new int[] { 5, 0, 0, 65536 });
+            inputNumber.Location = new Point(369, 218);
+            inputNumber.Name = "inputNumber";
+            inputNumber.Size = new Size(145, 27);
+            inputNumber.TabIndex = 4;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -178,6 +189,7 @@
             panel2.ResumeLayout(false);
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)inputNumber).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -197,5 +209,6 @@
         private Button button3;
         private Button button2;
         private Button playButton;
+        private NumericUpDown inputNumber;
     }
 }
