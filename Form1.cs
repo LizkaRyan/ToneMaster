@@ -112,7 +112,7 @@ namespace ToneMaster
         private void ReduceNoise(object sender, EventArgs e)
         {
             string fileTemp = $"{properties["temp.directory"]}\\temp.wav";
-            wavReader.AntiDistortion(fileTemp);
+            wavReader.ReduceNoise(fileTemp,0.8f);
             wavReader = new WavReader(fileTemp);
         }
     }
