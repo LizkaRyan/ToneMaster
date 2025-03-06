@@ -155,6 +155,10 @@ public class WavReader
         {
             _waveOut.Stop();
             _isPlaying = false;
+            _waveOut.Dispose();
+            _reader.Close();
+            _waveOut = null;
+            _reader = null;
             Console.WriteLine("Lecture arrêtée.");
         }
     }
@@ -190,6 +194,8 @@ public class WavReader
             // Assurez-vous de ne pas dépasser la longueur du fichier
             if (newPosition > _reader.Length)
                 newPosition = _reader.Length;
+            if (newPosition < 0)
+                newPosition = 0;
 
             _reader.Position = newPosition;
         }
@@ -213,7 +219,20 @@ public class WavReader
 
         Console.WriteLine($"Fichier cloné enregistré sous : {outputPath}");
     }
-    
+
+    public void DrawCursor(Graphics graphics,Panel panel)
+    {
+        if (_reader!=null)
+        {
+            double percentage = (_reader.CurrentTime.TotalMilliseconds / _reader.TotalTime.TotalMilliseconds) * 100;
+            double beginX = panel.Width * percentage / 100;
+            double beginY = 0;
+            double endX = panel.Width * percentage / 100;
+            double endY = panel.Height;
+            graphics.DrawLine(new Pen(Color.Red, 1), (int)beginX, (int)beginY, (int)endX, (int)endY);
+        }
+    }
+
     public void DrawWaveform(Graphics graphics, Panel panel)
     {
         // Extraire les échantillons audio
