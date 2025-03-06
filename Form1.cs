@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using ToneMaster.Audio;
 using ToneMaster.Window;
 
@@ -35,7 +36,7 @@ namespace ToneMaster
         private void Amplify(object sender, EventArgs e)
         {
             string fileTemp = $"{properties["temp.directory"]}\\temp.wav";
-            wavReader.Amplify(fileTemp, 2);
+            wavReader.Amplify(fileTemp, (float)this.inputNumber.Value);
             wavReader = new WavReader(fileTemp);
             this.WavePanel.Invalidate();
         }
@@ -103,7 +104,7 @@ namespace ToneMaster
         private void AntiDistortion(object sender, EventArgs e)
         {
             string fileTemp = $"{properties["temp.directory"]}\\temp.wav";
-            wavReader.AntiDistortion(fileTemp);
+            wavReader.AntiDistortion(fileTemp, (float)this.inputNumber.Value);
             wavReader = new WavReader(fileTemp);
             this.WavePanel.Invalidate();
         }

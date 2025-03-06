@@ -36,12 +36,12 @@
             next10Button = new Button();
             pauseButton = new Button();
             stopButton = new Button();
-            WavePanel = new Panel();
             inputNumber = new NumericUpDown();
             playButton = new Button();
             button3 = new Button();
             button2 = new Button();
             button1 = new Button();
+            WavePanel = new Panel();
             menuStrip1 = new MenuStrip();
             fichierToolStripMenuItem = new ToolStripMenuItem();
             ouvrirUnFichierToolStripMenuItem = new ToolStripMenuItem();
@@ -88,12 +88,12 @@
             panel2.Controls.Add(next10Button);
             panel2.Controls.Add(pauseButton);
             panel2.Controls.Add(stopButton);
-            panel2.Controls.Add(WavePanel);
             panel2.Controls.Add(inputNumber);
             panel2.Controls.Add(playButton);
             panel2.Controls.Add(button3);
             panel2.Controls.Add(button2);
             panel2.Controls.Add(button1);
+            panel2.Controls.Add(WavePanel);
             panel2.Location = new Point(11, 10);
             panel2.Name = "panel2";
             panel2.Size = new Size(957, 334);
@@ -138,15 +138,6 @@
             stopButton.Text = "Stop";
             stopButton.UseVisualStyleBackColor = true;
             stopButton.Click += stopButton_Click;
-            // 
-            // WavePanel
-            // 
-            WavePanel.BackColor = SystemColors.ActiveBorder;
-            WavePanel.Location = new Point(13, 15);
-            WavePanel.Name = "WavePanel";
-            WavePanel.Size = new Size(927, 182);
-            WavePanel.TabIndex = 5;
-            WavePanel.Paint += WavePanel_Paint;
             // 
             // inputNumber
             // 
@@ -195,6 +186,15 @@
             button1.Text = "Amplify";
             button1.UseVisualStyleBackColor = true;
             button1.Click += Amplify;
+            // 
+            // WavePanel
+            // 
+            WavePanel.BackColor = SystemColors.ActiveBorder;
+            WavePanel.Location = new Point(13, 20);
+            WavePanel.Name = "WavePanel";
+            WavePanel.Size = new Size(927, 182);
+            WavePanel.TabIndex = 5;
+            WavePanel.Paint += WavePanel_Paint;
             // 
             // menuStrip1
             // 
