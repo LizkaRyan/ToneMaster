@@ -27,6 +27,7 @@ namespace ToneMaster
                 {
                     string selectedFilePath = openFileDialog.FileName;
                     wavReader = new WavReader(selectedFilePath);
+                    this.WavePanel.Invalidate();
                 }
             }
         }
@@ -36,6 +37,7 @@ namespace ToneMaster
             string fileTemp = $"{properties["temp.directory"]}\\temp.wav";
             wavReader.Amplify(fileTemp, 2);
             wavReader = new WavReader(fileTemp);
+            this.WavePanel.Invalidate();
         }
 
         private static Dictionary<string, string> ReadProperties()
@@ -91,7 +93,7 @@ namespace ToneMaster
         {
             SaveWindow saveWindow = new SaveWindow(wavReader);
             // Affiche la fenêtre
-            saveWindow.Show(); // Utilisez ShowDialog() pour une fenêtre modale
+            saveWindow.ShowDialog(); // Utilisez ShowDialog() pour une fenêtre modale
         }
 
         private void AntiDistortion(object sender, EventArgs e)
@@ -99,13 +101,35 @@ namespace ToneMaster
             string fileTemp = $"{properties["temp.directory"]}\\temp.wav";
             wavReader.AntiDistortion(fileTemp);
             wavReader = new WavReader(fileTemp);
+            this.WavePanel.Invalidate();
         }
 
         private void ReduceNoise(object sender, EventArgs e)
         {
             string fileTemp = $"{properties["temp.directory"]}\\temp.wav";
-            wavReader.ReduceNoise(fileTemp,0.8f);
+            wavReader.ReduceNoise(fileTemp, 0.8f);
             wavReader = new WavReader(fileTemp);
+            this.WavePanel.Invalidate();
+        }
+
+        private void WavePanel_Paint(object sender, PaintEventArgs e)
+        {
+            if (this.wavReader!=null)
+            {
+                this.wavReader.DrawWaveform(e.Graphics, this.WavePanel);
+                return;
+            }
+            this.DrawStraightLine(e.Graphics, this.WavePanel);
+        }
+
+        private void DrawStraightLine(Graphics g,Panel panel)
+        {
+            float beginY=panel.Height/2;
+            float beginX = 0;
+            float endY=panel.Height/2;
+            float endX = panel.Width;
+
+            g.DrawLine(new Pen(Color.Blue, 1), beginX,beginY,endX,endY);
         }
     }
 }

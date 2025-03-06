@@ -59,4 +59,23 @@ public class WavData
             }
         }
     }
+    
+    public short[] GetSamples()
+    {
+        // Extraire les données brutes de l'échantillon
+        byte[] dataChunk = this.DataChunk;
+
+        // Vérifier le format (16 bits attendu)
+        short bitsPerSample = BitConverter.ToInt16(this.FmtChunk, 14);
+        if (bitsPerSample != 16) throw new NotSupportedException("Uniquement 16 bits par échantillon supporté");
+
+        // Convertir les octets en échantillons (shorts)
+        short[] samples = new short[dataChunk.Length / 2];
+        for (int i = 0; i < samples.Length; i++)
+        {
+            samples[i] = BitConverter.ToInt16(dataChunk, i * 2);
+        }
+
+        return samples;
+    }
 }
