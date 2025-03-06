@@ -32,6 +32,8 @@
             ToneMaster = new Label();
             MainPanel = new Panel();
             panel2 = new Panel();
+            WavePanel = new Panel();
+            inputNumber = new NumericUpDown();
             playButton = new Button();
             button3 = new Button();
             button2 = new Button();
@@ -41,12 +43,11 @@
             ouvrirUnFichierToolStripMenuItem = new ToolStripMenuItem();
             enregistrerToolStripMenuItem = new ToolStripMenuItem();
             fileSelected = new OpenFileDialog();
-            inputNumber = new NumericUpDown();
             panel1.SuspendLayout();
             MainPanel.SuspendLayout();
             panel2.SuspendLayout();
-            menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)inputNumber).BeginInit();
+            menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
@@ -79,6 +80,7 @@
             // 
             // panel2
             // 
+            panel2.Controls.Add(WavePanel);
             panel2.Controls.Add(inputNumber);
             panel2.Controls.Add(playButton);
             panel2.Controls.Add(button3);
@@ -88,6 +90,23 @@
             panel2.Name = "panel2";
             panel2.Size = new Size(957, 334);
             panel2.TabIndex = 0;
+            // 
+            // WavePanel
+            // 
+            WavePanel.BackColor = SystemColors.ActiveBorder;
+            WavePanel.Location = new Point(13, 15);
+            WavePanel.Name = "WavePanel";
+            WavePanel.Size = new Size(927, 182);
+            WavePanel.TabIndex = 5;
+            WavePanel.Paint += WavePanel_Paint;
+            // 
+            // inputNumber
+            // 
+            inputNumber.Increment = new decimal(new int[] { 5, 0, 0, 65536 });
+            inputNumber.Location = new Point(369, 218);
+            inputNumber.Name = "inputNumber";
+            inputNumber.Size = new Size(145, 27);
+            inputNumber.TabIndex = 4;
             // 
             // playButton
             // 
@@ -164,14 +183,6 @@
             // 
             fileSelected.FileName = "fileSelected";
             // 
-            // inputNumber
-            // 
-            inputNumber.Increment = new decimal(new int[] { 5, 0, 0, 65536 });
-            inputNumber.Location = new Point(369, 218);
-            inputNumber.Name = "inputNumber";
-            inputNumber.Size = new Size(145, 27);
-            inputNumber.TabIndex = 4;
-            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -187,9 +198,9 @@
             panel1.PerformLayout();
             MainPanel.ResumeLayout(false);
             panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)inputNumber).EndInit();
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)inputNumber).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -210,5 +221,6 @@
         private Button button2;
         private Button playButton;
         private NumericUpDown inputNumber;
+        private Panel WavePanel;
     }
 }

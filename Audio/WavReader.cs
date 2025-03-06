@@ -162,4 +162,32 @@ public class WavReader
 
         Console.WriteLine($"Fichier cloné enregistré sous : {outputPath}");
     }
+    
+    public void DrawWaveform(Graphics graphics, Panel panel)
+    {
+        // Extraire les échantillons audio
+        short[] samples = this.WavData.GetSamples();
+
+        // Normalisation pour adapter la courbe au Panel
+        float halfHeight = panel.Height / 2.0f;
+        float scaleY = halfHeight / short.MaxValue;
+        float scaleX = (float)samples.Length / panel.Width;
+
+        // Styliser la courbe
+        Pen wavePen = new Pen(Color.Blue, 1);
+
+        // Dessiner les échantillons
+        for (int x = 0; x < panel.Width - 1; x++)
+        {
+            int sampleIndex1 = (int)(x * scaleX);
+            int sampleIndex2 = (int)((x + 1) * scaleX);
+
+            if (sampleIndex1 < samples.Length && sampleIndex2 < samples.Length)
+            {
+                int y1 = (int)(halfHeight - samples[sampleIndex1] * scaleY);
+                int y2 = (int)(halfHeight - samples[sampleIndex2] * scaleY);
+                graphics.DrawLine(wavePen, x, y1, x + 1, y2);
+            }
+        }
+    }
 }
