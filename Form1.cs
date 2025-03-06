@@ -86,6 +86,10 @@ namespace ToneMaster
 
         private void playButton_Click(object sender, EventArgs e)
         {
+            if (wavReader.IsPlaying)
+            {
+                wavReader.Resume();
+            }
             wavReader.Play();
         }
 
@@ -114,7 +118,7 @@ namespace ToneMaster
 
         private void WavePanel_Paint(object sender, PaintEventArgs e)
         {
-            if (this.wavReader!=null)
+            if (this.wavReader != null)
             {
                 this.wavReader.DrawWaveform(e.Graphics, this.WavePanel);
                 return;
@@ -122,14 +126,34 @@ namespace ToneMaster
             this.DrawStraightLine(e.Graphics, this.WavePanel);
         }
 
-        private void DrawStraightLine(Graphics g,Panel panel)
+        private void DrawStraightLine(Graphics g, Panel panel)
         {
-            float beginY=panel.Height/2;
+            float beginY = panel.Height / 2;
             float beginX = 0;
-            float endY=panel.Height/2;
+            float endY = panel.Height / 2;
             float endX = panel.Width;
 
-            g.DrawLine(new Pen(Color.Blue, 1), beginX,beginY,endX,endY);
+            g.DrawLine(new Pen(Color.Blue, 1), beginX, beginY, endX, endY);
+        }
+
+        private void stopButton_Click(object sender, EventArgs e)
+        {
+            this.wavReader.Stop();
+        }
+
+        private void pauseButton_Click(object sender, EventArgs e)
+        {
+            this.wavReader.Pause();
+        }
+
+        private void next10Button_Click(object sender, EventArgs e)
+        {
+            this.wavReader.Skip(10);
+        }
+
+        private void prev10Button_Click(object sender, EventArgs e)
+        {
+            this.wavReader.Skip(-10);
         }
     }
 }
