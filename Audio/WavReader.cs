@@ -1,13 +1,22 @@
 ﻿using System.Media;
 using System.Text;
+using NAudio.Wave;
 
 namespace ToneMaster.Audio;
 
 public class WavReader
 {
-    private String input;
+    private readonly String _input;
 
     private WavData _wavData;
+    
+    private WaveOutEvent _waveOut;
+    
+    private WaveFileReader _reader;
+    
+    private bool _isPlaying;
+
+    public bool IsPlaying { get { return _isPlaying; } }
     
     public WavData WavData
     {
@@ -15,7 +24,7 @@ public class WavReader
         {
             if (_wavData == null)
             {
-                _wavData = new WavData(this.input);
+                _wavData = new WavData(this._input);
             }
             return _wavData;
         }
@@ -23,7 +32,8 @@ public class WavReader
 
     public WavReader(String input)
     {
-        this.input = input;
+        this._input = input;
+        this._isPlaying = false;
     }
 
     public void ReduceNoise(string outputPath, float threshold)
@@ -127,26 +137,67 @@ public class WavReader
 
     public void Play()
     {
-        try
+        if (!_isPlaying)
         {
-            SoundPlayer player = new SoundPlayer(this.input);
-            player.Play(); // Joue le fichier en mode asynchrone (sans bloquer le programme)
-
-            // Pour attendre la fin du son, utilisez PlaySync au lieu de Play
-            // player.PlaySync();
+            _reader = new WaveFileReader(this._input);
+            _waveOut = new WaveOutEvent();
+            _waveOut.Init(_reader);
+            _waveOut.Play();
+            _isPlaying = true;
 
             Console.WriteLine("Lecture du fichier audio...");
-            Console.ReadLine(); // Pour garder l'application ouverte
         }
-        catch (Exception ex)
+    }
+    
+    public void Stop()
+    {
+        if (_isPlaying)
         {
-            Console.WriteLine($"Erreur lors de la lecture du fichier : {ex.Message}");
+            _waveOut.Stop();
+            _isPlaying = false;
+            Console.WriteLine("Lecture arrêtée.");
+        }
+    }
+
+    public void Pause()
+    {
+        if (_isPlaying)
+        {
+            _waveOut.Pause();
+            Console.WriteLine("Lecture en pause.");
+        }
+    }
+
+    public void Resume()
+    {
+        if (_isPlaying)
+        {
+            _waveOut.Play();
+            Console.WriteLine("Lecture reprise.");
+        }
+    }
+
+    public void Skip(int seconds)
+    {
+        if (_reader != null && _waveOut != null)
+        {
+            long bytesPerSecond = _reader.WaveFormat.AverageBytesPerSecond;
+            long skipBytes = bytesPerSecond * seconds;
+
+            // Calculer la nouvelle position
+            long newPosition = _reader.Position + skipBytes;
+
+            // Assurez-vous de ne pas dépasser la longueur du fichier
+            if (newPosition > _reader.Length)
+                newPosition = _reader.Length;
+
+            _reader.Position = newPosition;
         }
     }
 
     public void CloneAudio(string outputPath)
     {
-        using (var inputStream = new FileStream(this.input, FileMode.Open, FileAccess.Read))
+        using (var inputStream = new FileStream(this._input, FileMode.Open, FileAccess.Read))
         using (var outputStream = new FileStream(outputPath, FileMode.Create, FileAccess.Write))
         using (var reader = new BinaryReader(inputStream))
         using (var writer = new BinaryWriter(outputStream))

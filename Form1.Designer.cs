@@ -32,6 +32,10 @@
             ToneMaster = new Label();
             MainPanel = new Panel();
             panel2 = new Panel();
+            prev10Button = new Button();
+            next10Button = new Button();
+            pauseButton = new Button();
+            stopButton = new Button();
             WavePanel = new Panel();
             inputNumber = new NumericUpDown();
             playButton = new Button();
@@ -80,6 +84,10 @@
             // 
             // panel2
             // 
+            panel2.Controls.Add(prev10Button);
+            panel2.Controls.Add(next10Button);
+            panel2.Controls.Add(pauseButton);
+            panel2.Controls.Add(stopButton);
             panel2.Controls.Add(WavePanel);
             panel2.Controls.Add(inputNumber);
             panel2.Controls.Add(playButton);
@@ -90,6 +98,46 @@
             panel2.Name = "panel2";
             panel2.Size = new Size(957, 334);
             panel2.TabIndex = 0;
+            // 
+            // prev10Button
+            // 
+            prev10Button.Location = new Point(295, 251);
+            prev10Button.Name = "prev10Button";
+            prev10Button.Size = new Size(50, 29);
+            prev10Button.TabIndex = 9;
+            prev10Button.Text = "10";
+            prev10Button.UseVisualStyleBackColor = true;
+            prev10Button.Click += prev10Button_Click;
+            // 
+            // next10Button
+            // 
+            next10Button.Location = new Point(531, 251);
+            next10Button.Name = "next10Button";
+            next10Button.Size = new Size(50, 29);
+            next10Button.TabIndex = 8;
+            next10Button.Text = "10";
+            next10Button.UseVisualStyleBackColor = true;
+            next10Button.Click += next10Button_Click;
+            // 
+            // pauseButton
+            // 
+            pauseButton.Location = new Point(351, 251);
+            pauseButton.Name = "pauseButton";
+            pauseButton.Size = new Size(56, 29);
+            pauseButton.TabIndex = 7;
+            pauseButton.Text = "Pause";
+            pauseButton.UseVisualStyleBackColor = true;
+            pauseButton.Click += pauseButton_Click;
+            // 
+            // stopButton
+            // 
+            stopButton.Location = new Point(475, 251);
+            stopButton.Name = "stopButton";
+            stopButton.Size = new Size(50, 29);
+            stopButton.TabIndex = 6;
+            stopButton.Text = "Stop";
+            stopButton.UseVisualStyleBackColor = true;
+            stopButton.Click += stopButton_Click;
             // 
             // WavePanel
             // 
@@ -110,9 +158,9 @@
             // 
             // playButton
             // 
-            playButton.Location = new Point(390, 251);
+            playButton.Location = new Point(413, 251);
             playButton.Name = "playButton";
-            playButton.Size = new Size(94, 29);
+            playButton.Size = new Size(56, 29);
             playButton.TabIndex = 3;
             playButton.Text = "Play";
             playButton.UseVisualStyleBackColor = true;
@@ -222,5 +270,9 @@
         private Button playButton;
         private NumericUpDown inputNumber;
         private Panel WavePanel;
+        private Button pauseButton;
+        private Button stopButton;
+        private Button prev10Button;
+        private Button next10Button;
     }
 }
