@@ -104,6 +104,7 @@ namespace ToneMaster
         private void AntiDistortion(object sender, EventArgs e)
         {
             string fileTemp = $"{properties["temp.directory"]}\\temp.wav";
+            Console.WriteLine($"{this.inputNumber.Value}");
             wavReader.AntiDistortion(fileTemp, (float)this.inputNumber.Value);
             wavReader = new WavReader(fileTemp);
             this.WavePanel.Invalidate();
