@@ -143,6 +143,7 @@
             // 
             inputNumber.Increment = new decimal(new int[] { 5, 0, 0, 65536 });
             inputNumber.Location = new Point(369, 218);
+            inputNumber.Maximum = new decimal(new int[] { 999999, 0, 0, 0 });
             inputNumber.Name = "inputNumber";
             inputNumber.Size = new Size(145, 27);
             inputNumber.TabIndex = 4;
