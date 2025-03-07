@@ -112,10 +112,22 @@ namespace ToneMaster
 
         private void ReduceNoise(object sender, EventArgs e)
         {
-            string fileTemp = $"{properties["temp.directory"]}\\temp.wav";
-            wavReader.ReduceNoise(fileTemp, 0.8f);
-            wavReader = new WavReader(fileTemp);
-            this.WavePanel.Invalidate();
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.InitialDirectory = "C:\\";
+                openFileDialog.Filter = "Tous les fichiers (*.wav)|*.wav";
+                openFileDialog.FilterIndex = 1;
+                openFileDialog.RestoreDirectory = true;
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string selectedFilePath = openFileDialog.FileName;
+                    string fileTemp = $"{properties["temp.directory"]}\\temp.wav";
+                    wavReader.RemoveSimilarities(selectedFilePath,fileTemp,(float)this.inputNumber.Value);
+                    wavReader = new WavReader(fileTemp);
+                    WavePanel.Invalidate();
+                }
+            }
         }
 
         private void WavePanel_Paint(object sender, PaintEventArgs e)

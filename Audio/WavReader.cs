@@ -1,5 +1,4 @@
-﻿using System.Media;
-using System.Text;
+﻿using System.Text;
 using NAudio.Wave;
 
 namespace ToneMaster.Audio;
@@ -9,15 +8,18 @@ public class WavReader
     private readonly String _input;
 
     private WavData _wavData;
-    
+
     private WaveOutEvent _waveOut;
-    
+
     private WaveFileReader _reader;
-    
+
     private bool _isPlaying;
 
-    public bool IsPlaying { get { return _isPlaying; } }
-    
+    public bool IsPlaying
+    {
+        get { return _isPlaying; }
+    }
+
     public WavData WavData
     {
         get
@@ -26,6 +28,7 @@ public class WavReader
             {
                 _wavData = new WavData(this._input);
             }
+
             return _wavData;
         }
     }
@@ -34,31 +37,6 @@ public class WavReader
     {
         this._input = input;
         this._isPlaying = false;
-    }
-
-    public void ReduceNoise(string outputPath, float threshold)
-    {
-        // Vérifier le format audio
-        short bitsPerSample = BitConverter.ToInt16(this.WavData.FmtChunk, 14);
-        if (bitsPerSample != 16) throw new Exception("Uniquement 16-bit PCM supporté");
-
-        // Réduction de bruit
-        for (int i = 0; i < WavData.DataChunk.Length; i += 2)
-        {
-            short sample = BitConverter.ToInt16(WavData.DataChunk, i);
-
-            // Appliquer un seuil : échantillons proches de zéro sont considérés comme du bruit
-            if (Math.Abs(sample) < threshold)
-            {
-                sample = 0; // Suppression du bruit
-            }
-
-            // Écrire le nouvel échantillon
-            BitConverter.GetBytes(sample).CopyTo(WavData.DataChunk, i);
-        }
-
-        // Réécriture du fichier
-        RewriteData(outputPath);
     }
 
     public void AntiDistortion(string outputPath, float threshold = 0.95f)
@@ -117,6 +95,69 @@ public class WavReader
         RewriteData(outputPath);
     }
 
+    public void RemoveSimilarities(string input2Path, string outputPath, float threshold = 0.1f)
+    {
+        // Charger les deux fichiers audio
+        WavData audio1 = new WavData(this._input);
+        WavData audio2 = new WavData(input2Path);
+
+        // Traiter les données audio
+        byte[] processedData = ProcessAudioData(audio1, audio2, threshold);
+
+        // Écrire le fichier de sortie
+        WriteOutputFile(audio1, processedData, outputPath);
+    }
+
+    private static byte[] ProcessAudioData(WavData audio1, WavData audio2, float threshold)
+    {
+        short[] samples1 = audio1.GetSamples();
+        short[] samples2 = audio2.GetSamples();
+        int minLength = Math.Min(samples1.Length, samples2.Length);
+
+        byte[] result = new byte[minLength * 2];
+
+        for (int i = 0; i < minLength; i++)
+        {
+            float s1 = samples1[i] / 32768f;
+            float s2 = samples2[i] / 32768f;
+            float diff = Math.Abs(s1 - s2);
+
+            // Suppression des similarités avec atténuation progressive
+            short output = (diff < threshold) ? (short)0 : samples1[i];
+
+            BitConverter.GetBytes(output).CopyTo(result, i * 2);
+        }
+
+        return result;
+    }
+
+    private static void WriteOutputFile(WavData original, byte[] newData, string outputPath)
+    {
+        using FileStream fs = File.Create(outputPath);
+
+        // Écrire l'en-tête RIFF original
+        fs.Write(original.RiffHeader, 0, original.RiffHeader.Length);
+
+        // Réécrire le chunk fmt
+        WriteChunk(fs, "fmt ", original.FmtChunk);
+
+        // Écrire le nouveau chunk data
+        WriteChunk(fs, "data", newData);
+
+        // Réécrire les autres chunks
+        foreach (byte[] chunkPart in original.OtherChunks)
+            fs.Write(chunkPart, 0, chunkPart.Length);
+    }
+
+    private static void WriteChunk(FileStream fs, string chunkId, byte[] chunkData)
+    {
+        fs.Write(Encoding.ASCII.GetBytes(chunkId), 0, 4);
+        fs.Write(BitConverter.GetBytes(chunkData.Length), 0, 4);
+        fs.Write(chunkData, 0, chunkData.Length);
+        if (chunkData.Length % 2 != 0) fs.WriteByte(0); // Padding
+    }
+
+
     private void RewriteData(string outputPath)
     {
         using (FileStream fs = File.Create(outputPath))
@@ -148,7 +189,7 @@ public class WavReader
             Console.WriteLine("Lecture du fichier audio...");
         }
     }
-    
+
     public void Stop()
     {
         if (_isPlaying)
@@ -209,20 +250,20 @@ public class WavReader
         using (var writer = new BinaryWriter(outputStream))
         {
             // Lire et écrire l'en-tête de 44 octets
-            byte[] header = reader.ReadBytes(44);  // L'en-tête est de 44 octets dans un fichier WAV standard
+            byte[] header = reader.ReadBytes(44); // L'en-tête est de 44 octets dans un fichier WAV standard
             writer.Write(header); // Écrire l'en-tête dans le fichier de sortie
 
             // Copier toutes les données audio du fichier source vers le fichier de sortie
             byte[] audioData = reader.ReadBytes((int)(inputStream.Length - 44)); // Lire les données audio
-            writer.Write(audioData);  // Écrire les données audio dans le fichier de sortie
+            writer.Write(audioData); // Écrire les données audio dans le fichier de sortie
         }
 
         Console.WriteLine($"Fichier cloné enregistré sous : {outputPath}");
     }
 
-    public void DrawCursor(Graphics graphics,Panel panel)
+    public void DrawCursor(Graphics graphics, Panel panel)
     {
-        if (_reader!=null)
+        if (_reader != null)
         {
             double percentage = (_reader.CurrentTime.TotalMilliseconds / _reader.TotalTime.TotalMilliseconds) * 100;
             double beginX = panel.Width * percentage / 100;
