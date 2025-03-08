@@ -28,12 +28,253 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Text = "Form1";
+            panel1 = new Panel();
+            ToneMaster = new Label();
+            MainPanel = new Panel();
+            panel2 = new Panel();
+            prev10Button = new Button();
+            next10Button = new Button();
+            pauseButton = new Button();
+            stopButton = new Button();
+            inputNumber = new NumericUpDown();
+            playButton = new Button();
+            button3 = new Button();
+            button2 = new Button();
+            button1 = new Button();
+            WavePanel = new Panel();
+            menuStrip1 = new MenuStrip();
+            fichierToolStripMenuItem = new ToolStripMenuItem();
+            ouvrirUnFichierToolStripMenuItem = new ToolStripMenuItem();
+            enregistrerToolStripMenuItem = new ToolStripMenuItem();
+            fileSelected = new OpenFileDialog();
+            panel1.SuspendLayout();
+            MainPanel.SuspendLayout();
+            panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)inputNumber).BeginInit();
+            menuStrip1.SuspendLayout();
+            SuspendLayout();
+            // 
+            // panel1
+            // 
+            panel1.BackColor = SystemColors.Highlight;
+            panel1.Controls.Add(ToneMaster);
+            panel1.Location = new Point(0, 34);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(981, 64);
+            panel1.TabIndex = 0;
+            // 
+            // ToneMaster
+            // 
+            ToneMaster.AutoSize = true;
+            ToneMaster.Font = new Font("Segoe UI", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            ToneMaster.ForeColor = SystemColors.Control;
+            ToneMaster.Location = new Point(12, 9);
+            ToneMaster.Name = "ToneMaster";
+            ToneMaster.Size = new Size(170, 38);
+            ToneMaster.TabIndex = 0;
+            ToneMaster.Text = "ToneMaster";
+            // 
+            // MainPanel
+            // 
+            MainPanel.Controls.Add(panel2);
+            MainPanel.Location = new Point(1, 94);
+            MainPanel.Name = "MainPanel";
+            MainPanel.Size = new Size(980, 353);
+            MainPanel.TabIndex = 1;
+            // 
+            // panel2
+            // 
+            panel2.Controls.Add(prev10Button);
+            panel2.Controls.Add(next10Button);
+            panel2.Controls.Add(pauseButton);
+            panel2.Controls.Add(stopButton);
+            panel2.Controls.Add(inputNumber);
+            panel2.Controls.Add(playButton);
+            panel2.Controls.Add(button3);
+            panel2.Controls.Add(button2);
+            panel2.Controls.Add(button1);
+            panel2.Controls.Add(WavePanel);
+            panel2.Location = new Point(11, 10);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(957, 334);
+            panel2.TabIndex = 0;
+            // 
+            // prev10Button
+            // 
+            prev10Button.Location = new Point(295, 251);
+            prev10Button.Name = "prev10Button";
+            prev10Button.Size = new Size(50, 29);
+            prev10Button.TabIndex = 9;
+            prev10Button.Text = "10";
+            prev10Button.UseVisualStyleBackColor = true;
+            prev10Button.Click += prev10Button_Click;
+            // 
+            // next10Button
+            // 
+            next10Button.Location = new Point(531, 251);
+            next10Button.Name = "next10Button";
+            next10Button.Size = new Size(50, 29);
+            next10Button.TabIndex = 8;
+            next10Button.Text = "10";
+            next10Button.UseVisualStyleBackColor = true;
+            next10Button.Click += next10Button_Click;
+            // 
+            // pauseButton
+            // 
+            pauseButton.Location = new Point(351, 251);
+            pauseButton.Name = "pauseButton";
+            pauseButton.Size = new Size(56, 29);
+            pauseButton.TabIndex = 7;
+            pauseButton.Text = "Pause";
+            pauseButton.UseVisualStyleBackColor = true;
+            pauseButton.Click += pauseButton_Click;
+            // 
+            // stopButton
+            // 
+            stopButton.Location = new Point(475, 251);
+            stopButton.Name = "stopButton";
+            stopButton.Size = new Size(50, 29);
+            stopButton.TabIndex = 6;
+            stopButton.Text = "Stop";
+            stopButton.UseVisualStyleBackColor = true;
+            stopButton.Click += stopButton_Click;
+            // 
+            // inputNumber
+            // 
+            inputNumber.DecimalPlaces = 2;
+            inputNumber.Increment = new decimal(new int[] { 5, 0, 0, 65536 });
+            inputNumber.Location = new Point(369, 218);
+            inputNumber.Maximum = new decimal(new int[] { 999999, 0, 0, 0 });
+            inputNumber.Name = "inputNumber";
+            inputNumber.Size = new Size(145, 27);
+            inputNumber.TabIndex = 4;
+            // 
+            // playButton
+            // 
+            playButton.Location = new Point(413, 251);
+            playButton.Name = "playButton";
+            playButton.Size = new Size(56, 29);
+            playButton.TabIndex = 3;
+            playButton.Text = "Play";
+            playButton.UseVisualStyleBackColor = true;
+            playButton.Click += playButton_Click;
+            // 
+            // button3
+            // 
+            button3.Location = new Point(732, 286);
+            button3.Name = "button3";
+            button3.Size = new Size(136, 29);
+            button3.TabIndex = 2;
+            button3.Text = "Reduce Noise";
+            button3.UseVisualStyleBackColor = true;
+            button3.Click += ReduceNoise;
+            // 
+            // button2
+            // 
+            button2.Location = new Point(378, 286);
+            button2.Name = "button2";
+            button2.Size = new Size(124, 29);
+            button2.TabIndex = 1;
+            button2.Text = "AntiDistortion";
+            button2.UseVisualStyleBackColor = true;
+            button2.Click += AntiDistortion;
+            // 
+            // button1
+            // 
+            button1.Location = new Point(28, 286);
+            button1.Name = "button1";
+            button1.Size = new Size(94, 29);
+            button1.TabIndex = 0;
+            button1.Text = "Amplify";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += Amplify;
+            // 
+            // WavePanel
+            // 
+            WavePanel.BackColor = SystemColors.ActiveBorder;
+            WavePanel.Location = new Point(13, 20);
+            WavePanel.Name = "WavePanel";
+            WavePanel.Size = new Size(927, 182);
+            WavePanel.TabIndex = 5;
+            WavePanel.Paint += WavePanel_Paint;
+            // 
+            // menuStrip1
+            // 
+            menuStrip1.ImageScalingSize = new Size(20, 20);
+            menuStrip1.Items.AddRange(new ToolStripItem[] { fichierToolStripMenuItem });
+            menuStrip1.Location = new Point(0, 0);
+            menuStrip1.Name = "menuStrip1";
+            menuStrip1.Size = new Size(981, 28);
+            menuStrip1.TabIndex = 2;
+            menuStrip1.Text = "menuStrip1";
+            // 
+            // fichierToolStripMenuItem
+            // 
+            fichierToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { ouvrirUnFichierToolStripMenuItem, enregistrerToolStripMenuItem });
+            fichierToolStripMenuItem.Name = "fichierToolStripMenuItem";
+            fichierToolStripMenuItem.Size = new Size(66, 24);
+            fichierToolStripMenuItem.Text = "Fichier";
+            // 
+            // ouvrirUnFichierToolStripMenuItem
+            // 
+            ouvrirUnFichierToolStripMenuItem.Name = "ouvrirUnFichierToolStripMenuItem";
+            ouvrirUnFichierToolStripMenuItem.Size = new Size(197, 26);
+            ouvrirUnFichierToolStripMenuItem.Text = "Ouvrir un fichier";
+            ouvrirUnFichierToolStripMenuItem.Click += ouvrirUnFichierToolStripMenuItem_Click;
+            // 
+            // enregistrerToolStripMenuItem
+            // 
+            enregistrerToolStripMenuItem.Name = "enregistrerToolStripMenuItem";
+            enregistrerToolStripMenuItem.Size = new Size(197, 26);
+            enregistrerToolStripMenuItem.Text = "Enregistrer";
+            enregistrerToolStripMenuItem.Click += enregistrerToolStripMenuItem_Click;
+            // 
+            // fileSelected
+            // 
+            fileSelected.FileName = "fileSelected";
+            // 
+            // Form1
+            // 
+            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(981, 450);
+            Controls.Add(MainPanel);
+            Controls.Add(panel1);
+            Controls.Add(menuStrip1);
+            MainMenuStrip = menuStrip1;
+            Name = "Form1";
+            Text = "Form1";
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
+            MainPanel.ResumeLayout(false);
+            panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)inputNumber).EndInit();
+            menuStrip1.ResumeLayout(false);
+            menuStrip1.PerformLayout();
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
+
+        private Panel panel1;
+        private Label ToneMaster;
+        private Panel MainPanel;
+        private MenuStrip menuStrip1;
+        private ToolStripMenuItem fichierToolStripMenuItem;
+        private ToolStripMenuItem ouvrirUnFichierToolStripMenuItem;
+        private ToolStripMenuItem enregistrerToolStripMenuItem;
+        private OpenFileDialog fileSelected;
+        private Panel panel2;
+        private Button button1;
+        private Button button3;
+        private Button button2;
+        private Button playButton;
+        private NumericUpDown inputNumber;
+        private Panel WavePanel;
+        private Button pauseButton;
+        private Button stopButton;
+        private Button prev10Button;
+        private Button next10Button;
     }
 }
